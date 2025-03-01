@@ -1,0 +1,6 @@
+body { background: black; color: white; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+.container { max-width: 800px; margin: auto; }
+.project { background: #222; padding: 10px; margin: 10px 0; border-radius: 5px; }
+a { color: lightblue; text-decoration: none; }
+.btn { background: gray; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 5px; }
+footer { margin-top: 20px; padding: 10px; background: #111; color: gray; }
