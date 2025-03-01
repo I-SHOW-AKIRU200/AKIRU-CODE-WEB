@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,21 +8,8 @@
         .container { width: 80%; margin: auto; }
         button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
         .project { border: 1px solid gray; padding: 10px; margin: 10px 0; }
-        pre { background: #222; color: #0f0; padding: 10px; }
     </style>
     <script>
-        function saveProject() {
-            let name = document.getElementById("name").value;
-            let description = document.getElementById("description").value;
-            let code = document.getElementById("code").value;
-            
-            let projects = JSON.parse(localStorage.getItem("projects")) || {};
-            projects[name] = { description, code, published: false };
-            localStorage.setItem("projects", JSON.stringify(projects));
-            
-            window.location.href = "index.html";
-        }
-
         function loadProjects() {
             let projects = JSON.parse(localStorage.getItem("projects")) || {};
             let container = document.getElementById("projects");
@@ -52,7 +40,67 @@
         function viewProject(name) {
             window.location.href = `view.html#${name}`;
         }
-        
+    </script>
+</head>
+<body onload="loadProjects()">
+    <div class="container">
+        <h1>My Projects</h1>
+        <a href="new.html"><button>Create New Project</button></a>
+        <div id="projects"></div>
+    </div>
+</body>
+</html>
+
+
+<!-- new.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Project</title>
+    <style>
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        input, textarea { width: 100%; margin: 5px 0; }
+        button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
+    </style>
+    <script>
+        function saveProject() {
+            let name = document.getElementById("name").value;
+            let description = document.getElementById("description").value;
+            let code = document.getElementById("code").value;
+            
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            projects[name] = { description, code, published: false };
+            localStorage.setItem("projects", JSON.stringify(projects));
+            
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Project</h1>
+        <input type="text" id="name" placeholder="Project Name" required>
+        <textarea id="description" placeholder="Description"></textarea>
+        <textarea id="code" placeholder="Code" required></textarea>
+        <button onclick="saveProject()">Confirm</button>
+    </div>
+</body>
+</html>
+
+
+<!-- view.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Project</title>
+    <style>
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        pre { background: #222; color: #0f0; padding: 10px; }
+        button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
+    </style>
+    <script>
         function loadProjectView() {
             let name = window.location.hash.substring(1);
             let projects = JSON.parse(localStorage.getItem("projects")) || {};
@@ -72,11 +120,12 @@
         }
     </script>
 </head>
-<body onload="loadProjects()">
+<body onload="loadProjectView()">
     <div class="container">
-        <h1>My Projects</h1>
-        <a href="new.html"><button>Create New Project</button></a>
-        <div id="projects"></div>
+        <h1 id="projectName"></h1>
+        <p id="projectDescription"></p>
+        <pre id="projectCode"></pre>
+        <button onclick="copyCode()">Copy Code</button>
     </div>
 </body>
 </html>
