@@ -1,15 +1,72 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Code Sharing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .project {
+            background: #222;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .btn {
+            background: gray;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background: #111;
+            color: gray;
+        }
+    </style>
 </head>
 <body>
     <h1>Code Sharing Platform</h1>
     <a class="btn" href="new.html">Create New Project</a>
     <div class="container" id="projects-container"></div>
-    <footer>©TEAM-AKIRU</footer>
-    <script src="script.js"></script>
+    <footer>&copy;TEAM-AKIRU</footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const projectsContainer = document.getElementById("projects-container");
+
+            fetch("projects.json")
+                .then(response => response.json())
+                .then(projects => {
+                    projects.forEach(project => {
+                        const projectElement = document.createElement("div");
+                        projectElement.classList.add("project");
+                        projectElement.innerHTML = `
+                            <h3>${project.name}</h3>
+                            <p>${project.description}</p>
+                            <a href="view.html?name=${encodeURIComponent(project.name)}">View Code</a>
+                        `;
+                        projectsContainer.appendChild(projectElement);
+                    });
+                })
+                .catch(error => console.error("Error loading projects:", error));
+        });
+    </script>
 </body>
 </html>
