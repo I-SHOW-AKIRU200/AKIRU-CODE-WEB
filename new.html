@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Project</title>
+    <style>
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        input, textarea { width: 100%; margin: 5px 0; }
+        button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
+    </style>
+    <script>
+        function saveProject() {
+            let name = document.getElementById("name").value;
+            let description = document.getElementById("description").value;
+            let code = document.getElementById("code").value;
+            
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            projects[name] = { description, code, published: false };
+            localStorage.setItem("projects", JSON.stringify(projects));
+            
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Project</h1>
+        <input type="text" id="name" placeholder="Project Name" required>
+        <textarea id="description" placeholder="Description"></textarea>
+        <textarea id="code" placeholder="Code" required></textarea>
+        <button onclick="saveProject()">Confirm</button>
+    </div>
+</body>
+</html>
