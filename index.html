@@ -1,72 +1,82 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Code Sharing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            background: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        .project {
-            background: #222;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        a {
-            color: lightblue;
-            text-decoration: none;
-        }
-        .btn {
-            background: gray;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        footer {
-            margin-top: 20px;
-            padding: 10px;
-            background: #111;
-            color: gray;
-        }
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
+        .project { border: 1px solid gray; padding: 10px; margin: 10px 0; }
+        pre { background: #222; color: #0f0; padding: 10px; }
     </style>
-</head>
-<body>
-    <h1>Code Sharing Platform</h1>
-    <a class="btn" href="new.html">Create New Project</a>
-    <div class="container" id="projects-container"></div>
-    <footer>&copy;TEAM-AKIRU</footer>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const projectsContainer = document.getElementById("projects-container");
+        function saveProject() {
+            let name = document.getElementById("name").value;
+            let description = document.getElementById("description").value;
+            let code = document.getElementById("code").value;
+            
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            projects[name] = { description, code, published: false };
+            localStorage.setItem("projects", JSON.stringify(projects));
+            
+            window.location.href = "index.html";
+        }
 
-            fetch("projects.json")
-                .then(response => response.json())
-                .then(projects => {
-                    projects.forEach(project => {
-                        const projectElement = document.createElement("div");
-                        projectElement.classList.add("project");
-                        projectElement.innerHTML = `
-                            <h3>${project.name}</h3>
-                            <p>${project.description}</p>
-                            <a href="view.html?name=${encodeURIComponent(project.name)}">View Code</a>
-                        `;
-                        projectsContainer.appendChild(projectElement);
-                    });
-                })
-                .catch(error => console.error("Error loading projects:", error));
-        });
+        function loadProjects() {
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            let container = document.getElementById("projects");
+            container.innerHTML = "";
+            
+            for (let name in projects) {
+                let project = projects[name];
+                let div = document.createElement("div");
+                div.className = "project";
+                div.innerHTML = `
+                    <h2>${name}</h2>
+                    <p>${project.description}</p>
+                    <button onclick="viewProject('${name}')">View</button>
+                    <button onclick="togglePublish('${name}')">${project.published ? "Unpublish" : "Publish"}</button>
+                    ${project.published ? `<p>Public link: <a href="view.html#${name}">view.html#${name}</a></p>` : ""}
+                `;
+                container.appendChild(div);
+            }
+        }
+        
+        function togglePublish(name) {
+            let projects = JSON.parse(localStorage.getItem("projects"));
+            projects[name].published = !projects[name].published;
+            localStorage.setItem("projects", JSON.stringify(projects));
+            loadProjects();
+        }
+        
+        function viewProject(name) {
+            window.location.href = `view.html#${name}`;
+        }
+        
+        function loadProjectView() {
+            let name = window.location.hash.substring(1);
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            let project = projects[name];
+            
+            if (project && project.published) {
+                document.getElementById("projectName").innerText = name;
+                document.getElementById("projectDescription").innerText = project.description;
+                document.getElementById("projectCode").innerText = project.code;
+            } else {
+                document.body.innerHTML = "<h1>Project not found or not published.</h1>";
+            }
+        }
+        
+        function copyCode() {
+            navigator.clipboard.writeText(document.getElementById("projectCode").innerText);
+        }
     </script>
+</head>
+<body onload="loadProjects()">
+    <div class="container">
+        <h1>My Projects</h1>
+        <a href="new.html"><button>Create New Project</button></a>
+        <div id="projects"></div>
+    </div>
 </body>
 </html>
