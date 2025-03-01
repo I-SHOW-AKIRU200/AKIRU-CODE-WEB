@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Project</title>
+    <style>
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: auto; }
+        pre { background: #222; color: #0f0; padding: 10px; }
+        button { background: gray; color: white; border: none; padding: 10px; cursor: pointer; }
+    </style>
+    <script>
+        function loadProjectView() {
+            let name = window.location.hash.substring(1);
+            let projects = JSON.parse(localStorage.getItem("projects")) || {};
+            let project = projects[name];
+            
+            if (project && project.published) {
+                document.getElementById("projectName").innerText = name;
+                document.getElementById("projectDescription").innerText = project.description;
+                document.getElementById("projectCode").innerText = project.code;
+            } else {
+                document.body.innerHTML = "<h1>Project not found or not published.</h1>";
+            }
+        }
+        
+        function copyCode() {
+            navigator.clipboard.writeText(document.getElementById("projectCode").innerText);
+        }
+    </script>
+</head>
+<body onload="loadProjectView()">
+    <div class="container">
+        <h1 id="projectName"></h1>
+        <p id="projectDescription"></p>
+        <pre id="projectCode"></pre>
+        <button onclick="copyCode()">Copy Code</button>
+    </div>
+</body>
+</html>
